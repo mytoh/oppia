@@ -30,12 +30,36 @@ print_world(int world[2][N+2][N+2], int cycle)
   int i,j;
   const char symbol = '*';
 
-    for (i=1; i<=N; i++) {
-      for (j=1; j<=N; j++) {
-        putchar(world[cycle][i][j]?symbol:' ');
-      }
-      puts("");
+  for (i=1; i<=N; i++) {
+    for (j=1; j<=N; j++) {
+      putchar(world[cycle][i][j]?symbol:' ');
     }
+    puts("");
+  }
+}
+
+void
+update_world(int world[2][N+2][N+2], int cycle)
+{
+  int i,j,tmp;
+  for (i=1; i<=N; i++) {
+    for (j=1; j<=N; j++) {
+      tmp = world[cycle][i+1>N?1:i+1][j          ] +
+        world[cycle][i-1?:N     ][j          ] +
+        world[cycle][i          ][j+1>N?1:j+1] +
+        world[cycle][i          ][j-1?:N     ] +
+        world[cycle][i+1>N?1:i+1][j+1>N?1:j+1] +
+        world[cycle][i+1>N?1:i+1][j-1?:N     ] +
+        world[cycle][i-1?:N     ][j+1>N?i:j+1] +
+        world[cycle][i-1?:N     ][j-1?:N     ];
+
+      if (world[cycle][i][j]) {
+        world[cycle^1][i][j] = (tmp==2||tmp==3);
+      } else {
+        world[cycle^1][i][j] = (tmp==3);
+      }
+    }
+  }
 }
 
 int
@@ -61,25 +85,7 @@ main()
     puts("");
     sleep(1);
 
-    /* update world */
-    for (i=1; i<=N; i++) {
-      for (j=1; j<=N; j++) {
-        tmp = world[cycle][i+1>N?1:i+1][j          ] +
-              world[cycle][i-1?:N     ][j          ] +
-              world[cycle][i          ][j+1>N?1:j+1] +
-              world[cycle][i          ][j-1?:N     ] +
-              world[cycle][i+1>N?1:i+1][j+1>N?1:j+1] +
-              world[cycle][i+1>N?1:i+1][j-1?:N     ] +
-              world[cycle][i-1?:N     ][j+1>N?i:j+1] +
-              world[cycle][i-1?:N     ][j-1?:N     ];
-
-        if (world[cycle][i][j]) {
-          world[cycle^1][i][j] = (tmp==2||tmp==3);
-        } else {
-          world[cycle^1][i][j] = (tmp==3);
-        }
-      }
-    }
+    update_world(world, cycle);
 
     cycle ^= 1;
 
