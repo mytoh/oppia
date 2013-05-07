@@ -29,11 +29,12 @@ print_world(int world[2][N+2][N+2], int cycle)
 {
   int i,j;
   const char symbol = '*';
+ 
 
   for (i=1; i<=N; i++) {
     for (j=1; j<=N; j++) {
       putchar(world[cycle][i][j]?symbol:' ');
-    }
+     }
     puts("");
   }
 }
